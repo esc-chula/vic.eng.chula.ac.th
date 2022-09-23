@@ -1,6 +1,5 @@
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
-require('https').globalAgent.options.ca = require('ssl-root-cas/latest').create();
 const axios = require('axios')
 
 export default {
@@ -36,7 +35,7 @@ export default {
       ]
     }]
     if(Object.getPrototypeOf(config.plugins[config.plugins.length - 1]).constructor.name === "UglifyJsPlugin"){
-      console.log("ตรวจพบการใช้ปลั๊กอินหัวควย กำลังเปลี่ยนปลั๊กอินโดยอัตโนมัติ...")
+      console.log("Replace default UglifyJsPlugin with uglifyjs-webpack-plugin")
       config.plugins[config.plugins.length - 1] = new UglifyJSPlugin()
     }
     config.plugins.push(new ExtractTextPlugin("styles.css"))
@@ -65,16 +64,6 @@ export default {
     {
       path: '/article/1',
       component: 'src/containers/article/1',
-    },
-    {
-      path: '/register',
-      component: 'src/containers/Registration',
-      getData: async () => {
-        const formID = "e89bd2e072932eb6ab1b21073b9fc0fd160dace96b8d0cc12346ae5c95e54a9e"
-        const { data: result } = await axios.get(`http://datanaliez.com/api/v1/form/info/${formID}`)
-        const formData = {...result.result}
-        return {formData, formID}
-      }
     },
     {
       is404: true,
